@@ -1,0 +1,130 @@
+#include<iostream>
+
+using namespace std;
+
+//Variables.
+short theValue;
+short currentNum;
+
+short binaryArr[16];
+short floorArr[16];
+short comparison; 
+
+short counter;
+short theCount;
+short invCounter;
+
+//Need the number for the item.
+//Need an array that holds the values.
+//Need a way to print out the zeros.
+//Need a way to get the floors.
+void storeInArray()
+{
+	binaryArr[counter] = currentNum;
+}
+void storeBit()
+{
+	currentNum = binaryArr[counter];
+}
+void getFloor()
+{
+	currentNum = binaryArr[invCounter];
+}
+void printBinary()
+{
+	cout << "AX = ";
+}
+void printSpace()
+{
+	cout << " ";
+}
+void printZero()
+{
+	cout << "0";
+}
+void printOne()
+{
+	cout << "1";
+}
+void printReturnChar()
+{
+	cout << endl;
+}
+
+void pausingIt()
+{
+	cout << endl;
+	system("pause");
+}
+int main()
+{
+	__asm {
+		mov theValue, 0x910C;
+		mov counter, 0;
+		mov cx, 1;
+		shl cx, 15;				//Shift the number 15 over. 1000 0000 0000 0000
+		mov comparison, cx;
+		call printBinary;
+	calculation:
+		mov cx, comparison;
+		mov ax, theValue;			//Number is in.
+		and ax, cx;				//Gets bx as 1 or 0
+								//Make the cases for counter.
+								//Printer 14 bit
+		mov currentNum, ax;		//Gets the bit number.
+		call storeInArray;
+		inc counter;
+		mov dx, counter;
+
+		mov ax, theValue;
+		shl ax, 1;
+		mov theValue, ax;
+		cmp dx, 15;
+		jle calculation;
+		mov counter, 0;
+		mov invCounter, 15;
+	printTheArray:
+		mov ax, counter;
+		call storeBit;
+		//inc counter;
+		mov ax, counter;
+		cmp ax, 16;
+		je finale;
+		
+		cmp currentNum, 0;
+		je printMyZero;
+		jmp printMyOne;
+	printMyZero:
+		call printZero;
+		inc counter;
+		mov ax, invCounter;
+		mov bx, 17;
+		sub bx, ax;
+		jmp printSpaceSep;
+	printMyOne:
+		call printOne;
+		inc counter;
+		jmp printSpaceSep;
+	printSpaceSep:
+		mov ax, counter;
+		mov bx, 4;
+		cwd;
+		idiv bx;
+		cmp dx, 0;
+		je spacer;
+		jmp printTheArray;
+	spacer:
+		call printSpace;
+		jmp printTheArray;
+	printFloors:
+		mov invCounter, 15;
+		mov counter, 0;
+	getOnesToFloors:
+		//Index!
+		
+
+	finale:
+		call pausingIt;
+	}
+	return 0;
+}
